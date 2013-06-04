@@ -1,5 +1,5 @@
-0aea116a3b0bd2f6b85607e548a0aa88 *DESCRIPTION
-3aef2edbd5489db30b056e1b4771489c *NAMESPACE
+f6ff440ff5b04acf0cb8eecab21981d9 *DESCRIPTION
+ac78f34859a0fd39bc600da806691578 *NAMESPACE
 1726a4cabf173e0830b9ded9c9a96ccc *R/CombineDataObjectInformation.R
 0055630c52d3066d166d64e48a0d3459 *R/DataObjectOverview.R
 70651f1ec8277fb4c8f5ac1c869e8f19 *R/DownloadEOLpages.R
@@ -16,9 +16,11 @@ c7bf40d6acd72cb8b27c44bf6f562a06 *R/GetReferences.R
 2b327115567728fd4e73344b58377dd8 *R/GetRichnessScores.R
 7691e360d30473492f1b3a139806ad86 *R/MakeEdgeLabels.R
 ea5dfaa39caebb3f93b5791b37a1ba04 *R/MakeHierarchyTree.R
-db6f4bba4a5a7d0ddfca84cfe1a230b0 *R/MatchHierPageToEOLdata.R
+d58ebe814df8dee7dbb04b6c49f0782a *R/MatchHierPageToEOLdata.R
 8748ac1eb977ef135cc9c2c7d970d49a *R/OneFileHierarchy.R
 4a999a85817fbb06155c1add62250661 *R/PingAPI.R
+c3ae86b1d3cb18fdae108e81e3037e22 *doc/ReolUserManual.pdf
+cdda1dc58f55c4835fb7ec531aa4322a *doc/ReolUserManual.rnw
 5257da8830c8e76c8169392aafd7ab2b *inst/extdata/Asparagales.tre
 64abcb3652b0bd7695bce4195d2aa5d4 *man/APItaxon.Rd
 01c1b0ba9e21a267950cd61d67c8ab74 *man/CombineDataObjectInformation.Rd
@@ -36,7 +38,7 @@ eeb271b78c8ea2e45e97afba7a27d298 *man/GatherSynonyms.Rd
 83d156439964b33da5f02bee62ed0ff1 *man/GetHierID.Rd
 b59597dba9a5fce529c90e5963cbbcc9 *man/GetReferences.Rd
 ad42bda6f610c2f16c1943ecceb3d620 *man/GetRichnessScores.Rd
-6b8d20eab769c1711bafc94d624e412d *man/MakeEdgeLabels.Rd
+ad84efb0ab0d56b8e6ff44ce6b2af2d7 *man/MakeEdgeLabels.Rd
 331ec3c346d0c8105bfd09588a293e41 *man/MakeHierarchyTree.Rd
 b37b81e33275bfddf31660bedbba9fcc *man/MatchHierPageToEOLdata.Rd
 632739a70906e168be4acbe4130eb73d *man/MatchTaxatoEOLID.Rd
