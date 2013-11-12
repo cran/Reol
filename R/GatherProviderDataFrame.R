@@ -1,12 +1,10 @@
 GatherProviderDataFrame <- function(MyEOLs, extended.output=FALSE) {
-	##Prune out NAs (see cichlids for example)
+  MyEOLs <- RemoveNAFiles(MyEOLs)
   Providers <- data.frame(matrix(nrow=1, ncol=2))
   for(i in sequence(length(MyEOLs))) {
-    res <- xmlToList(xmlRoot(xmlParse(MyEOLs[i], getDTD=FALSE))[[1]], simplify=FALSE) #[[1]] here for gathering just taxonConcepts
-#    if(res$message == "Sorry, there was a problem")
-#      res$ScientificName <- "NA"
-    taxon <- res$ScientificName
-    taxon <- FirstTwo(taxon)
+    res <- PageProcessing(MyEOLs[i])$taxonConcept
+    scientificName  <- res[[which(names(res) == grep("ScientificName", names(res), ignore.case=TRUE, value=T))]] #because some are cap and some are not
+    taxon <- FirstTwo(scientificName)
     if (is.null(taxon)) 
       taxon <- NA
     eolID <- res$taxonConceptID
@@ -22,7 +20,7 @@ GatherProviderDataFrame <- function(MyEOLs, extended.output=FALSE) {
   provider.vector <- NULL
   provider.dataframe <- Providers
   for(row.num in sequence(dim(Providers)[1])){
-    res <- xmlToList(xmlRoot(xmlParse(MyEOLs[row.num], getDTD=FALSE))[[1]], simplify=FALSE)
+    res <- PageProcessing(MyEOLs[row.num])$taxonConcept
     whichTaxon <- which(names(res$additionalInformation) == "taxon")
     for (i in sequence(length(whichTaxon))) {
       source <- NULL

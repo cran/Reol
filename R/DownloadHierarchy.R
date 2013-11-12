@@ -16,22 +16,36 @@ BestProvider <- function(MyEOLs) {
 }
 
 
-DownloadHierarchy <- function(MyEOLs, database=NULL, verbose=TRUE) {
+DownloadHierarchy <- function(MyEOLs, to.file=TRUE, database=NULL, verbose=TRUE) {
+#MyEOLs can be a file or an R object
+#to.file is whether you want to save the information as a file (T) or an R object (F)
   #Downloads provider database
   if(is.null(database))
     database <- BestProvider(MyEOLs)	
   results <- GatherProviderDataFrame(MyEOLs, extended.output=TRUE)
   column <- which(colnames(results) == paste(database, ".taxonID", sep=""))
   pages <- results[,column] 
+  hierpages <- vector("list", length=length(pages))
   for (i in sequence(length(pages))) {
     if (!is.na(pages[i])) {
       pageNum<-pages[i]
       web <- paste("http://eol.org/api/hierarchy_entries/1.0/", pageNum, sep="")
-      write(getURL(web), file=paste("hier", pages[i], ".xml", sep=""))
-      if(verbose)
-        print(paste("Downloaded ", "hier", pages[i], ".xml", sep=""))
+      if(to.file) {
+        write(getURL(web), file=paste("hier", pages[i], ".xml", sep=""))
+        if(verbose)
+          print(paste("Downloaded ", "hier", pages[i], ".xml", sep=""))
+      }
+      else {
+        hierpages[[i]] <- getURL(web)
+        names(hierpages)[[i]] <- paste("hier", pages[i], sep="")
+        if(verbose)
+          print(paste("hier", pages[i], " saved as R object", sep=""))
+      }
       Sys.sleep(1)
     }
   }
-  return(paste("hier", pages, ".xml", sep=""))
+  if(to.file)
+    return(paste("hier", pages, ".xml", sep=""))
+  else
+    return(hierpages)
 }

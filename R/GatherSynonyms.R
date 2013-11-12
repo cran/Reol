@@ -1,4 +1,5 @@
 GatherSynonyms <- function(MyHiers, output=c("detail", "counts")) {
+  MyHiers <- RemoveNAFiles(MyHiers)
   output <- match.arg(output)
   syns <- matrix(ncol=3, nrow=0)
   colnames(syns) <- c("Taxon", "hierID", "Synonym")
@@ -6,13 +7,12 @@ GatherSynonyms <- function(MyHiers, output=c("detail", "counts")) {
   colnames(SynCounts) <- c("Taxon", "hierID", "NumberOfSynonyms")
   for(i in sequence(length(MyHiers))){
     resOneFile <- OneFileHierarchy(MyHiers[i])
-    whichSpecies <- c(which(resOneFile[,2] == "Species"), which(resOneFile[,2] == "species"), which(resOneFile[,2] == "Sp."), which(resOneFile[,2] == "sp."), which(resOneFile[,2] == "Sp"), which(resOneFile[,2] == "sp"), which(resOneFile[,2] == "SP"))
+    Taxon <- resOneFile[which(resOneFile[,6] == GetHierID(MyHiers[i])), 1]
     whichSyn <- c(which(resOneFile[,3] == "Synonym"), which(resOneFile[,3] == "synonym"))
-    if(length(whichSpecies) > 0)
-      SynCounts[i,] <- c(resOneFile[whichSpecies[1], 1], resOneFile[whichSpecies[1], 6], length(whichSyn))
+    SynCounts[i,] <- c(Taxon, GetHierID(MyHiers[i]), length(whichSyn))
     if(length(whichSyn) > 0) {
       for(j in sequence(length(whichSyn))) {
-        syns <- data.frame(rbind(syns, c(resOneFile[whichSpecies[1], 1], resOneFile[whichSpecies[1], 6], resOneFile[whichSyn[j], 1])), stringsAsFactors=FALSE) 
+        syns <- data.frame(rbind(syns, c(Taxon, GetHierID(MyHiers[i]), resOneFile[whichSyn[j], 1])), stringsAsFactors=FALSE) 
       }
     }
   }
