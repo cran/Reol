@@ -67,7 +67,7 @@ providerCount <- function(res) {
 
 
 #gather vector of information
-DataProcessing <- function(res) {
+DataProcessing <- function(res, do.higher.taxonomy) {
   if(!is.null(res$taxonConcept)) {
     taxonData <- c(FirstTwo(res$taxonConcept$ScientificName), res$taxonConcept$ScientificName, res$taxonConcept$taxonConceptID)
     richness <- res$taxonConcept$additionalInformation$richness_score
@@ -76,13 +76,24 @@ DataProcessing <- function(res) {
     providers <- providerCount(res)
     DOs <- DOCount(res)
     pageLength <- sum(nchar(unlist(res, use.names=FALSE)))
+    higher.taxonomy <- ""
+    if (do.higher.taxonomy) {
+    	try(higher.taxonomy<-paste(MakeTreeData (DownloadHierarchy(res, to.file=FALSE)), collapse="/"))
+    	if(nchar(higher.taxonomy)==0) {
+    		try(higher.taxonomy<-paste(MakeTreeData (DownloadHierarchy(DownloadEOLpages(res$taxonConcept$taxonConceptID, to.file=FALSE), to.file=FALSE)), collapse="/")) #sometimes the taxon name does not match to the hierarchy, but the eol ID does
+    	}	
+    }
   }	
-  return(matrix(c(taxonData, richness, refCounts, CNs, providers , DOs, pageLength), nrow=1))
+  return(matrix(c(taxonData, richness, refCounts, CNs, providers , DOs, pageLength, higher.taxonomy), nrow=1))
 }
 
-CollectDataforWeb <- function(MyEOL) {
+CollectDataforWeb <- function(MyEOL, do.higher.taxonomy=FALSE) {
+#  higher.taxonomy<-""
+#  if(do.higher.taxonomy) {
+#    try(higher.taxonomy<-paste(MakeTreeData (DownloadHierarchy(MyEOL, to.file=FALSE)), collapse="/"))
+#  }
   res <- PageProcessing(MyEOL)
-  return(DataProcessing(res))
+  return(DataProcessing(res, do.higher.taxonomy))
 }
 
 

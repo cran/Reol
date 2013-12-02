@@ -1,6 +1,5 @@
 GatherDataObjectInformation <- function(MyEOL) {
   #this function works for one EOL file only.  It will return information about all of the different data objects associated with each taxon.  
-  #There may be warnings with this function, and they should be ok.  Warnings may indicate that there is more than one entry for a field, which is typically associated with the "additional information" subheading
   res <- PageProcessing(MyEOL)  
   whichDataObjects <- which(names(res) == "dataObject") 
   NumberOfDataObjects <- length(whichDataObjects) 
@@ -17,8 +16,8 @@ GatherDataObjectInformation <- function(MyEOL) {
 
   #add each data object one by one.  
   for(i in sequence(NumberOfDataObjects)) {
-    DO <- res[[whichDataObjects[i]]]
-    for(j in 1:length(DO)) {
+    DO <- unlist(res[[whichDataObjects[i]]])
+    for(j in sequence(length(DO))) {
       nameOfColumn <- names(DO)[j]
       if(!any(grepl(paste(nameOfColumn,'*', sep=""), colnames(DataObjectInfo)))) {  #add new column if data doesn't exist
         DataObjectInfo <- cbind(DataObjectInfo, rep(NA, NumberOfDataObjects))
@@ -26,7 +25,7 @@ GatherDataObjectInformation <- function(MyEOL) {
       }
       column <- which(colnames(DataObjectInfo) == nameOfColumn)
       #DataObjectInfo[i,column] <- paste("DO$", nameOfColumn, sep="")
-      DataObjectInfo[i,column] <- DO[[j]]
+      DataObjectInfo[i,column] <- DO[[j]][1] #Note: sometimes there are multiple elements. Typically, this is is just a main element (like a name of a provider) followed by attributes (URL), but we are just taking the first element regardless.
 
     }
   }
@@ -39,12 +38,11 @@ GatherDataObjectInformation <- function(MyEOL) {
 CombineDataObjectInformation <- function(MyEOLs, verbose=TRUE) {
   #Next: subset to Trusted Information only
   #this function works for multiple EOL files.  It will return information about all of the different data objects associated with each taxon.  
-  #There may be warnings with this function, and they should be ok.  Warnings may indicate that there is more than one entry for a field, which is typically associated with the "additional information" subheading
-  CombinedDOI <- suppressWarnings(GatherDataObjectInformation(MyEOLs[1]))
+  CombinedDOI <- GatherDataObjectInformation(MyEOLs[1])
   for (i in 2:length(MyEOLs)){
     if(verbose)
       print(paste("combined", i, "files"))
-    DOI <- suppressWarnings(GatherDataObjectInformation(MyEOLs[i]))
+    DOI <- GatherDataObjectInformation(MyEOLs[i])
     if(any(!colnames(DOI) %in% colnames(CombinedDOI))) { #check that all new data coming in will match existing data
       ColumnsToAdd <- which(!colnames(DOI) %in% colnames(CombinedDOI))
       for(j in sequence(length(ColumnsToAdd))) {
@@ -74,7 +72,7 @@ CombineDataObjectInformation <- function(MyEOLs, verbose=TRUE) {
 DataObjectOverview <- function(MyEOLs, verbose=TRUE){
   MyEOLs <- RemoveNAFiles(MyEOLs)
   if(length(MyEOLs) == 1)
-    cDOI <- suppressWarnings(GatherDataObjectInformation(MyEOLs))
+    cDOI <- GatherDataObjectInformation(MyEOLs)
 
   else
     cDOI <- CombineDataObjectInformation(MyEOLs, verbose=verbose)  
